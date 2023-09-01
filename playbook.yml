@@ -3,11 +3,13 @@
   connection: local
   tasks:
     - name: Update & Upgrade APT packages
+      become: true
       apt:
         update_cache: true
         upgrade: yes
 
     - name: Install new packages
+      become: true
       apt:
         name:
           - nano

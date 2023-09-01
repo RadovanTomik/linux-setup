@@ -8,7 +8,7 @@ on:
     - cron: '0 0 * * 0'  # Schedule for every Sunday at midnight UTC
 
 jobs:
-  ansible:
+  ansible-playbook:
     runs-on: ubuntu-latest  # Choose the runner based on your target host OS
 
     steps:
@@ -21,8 +21,7 @@ jobs:
           python-version: 3.11
 
       - name: Install Ansible
-        run: |
-          pip install ansible
+        run: pip install ansible
         working-directory: ${{ github.workspace }}
 
       - name: Test Ansible Playbook
