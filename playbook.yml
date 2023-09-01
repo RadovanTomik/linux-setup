@@ -23,7 +23,7 @@
 
     - name: Create a new user
       user:
-        name: {{ user_name }}
+        name: "{{ user_name }}"
         shell: /bin/bash
         create_home: true
 
@@ -35,7 +35,7 @@
 
     - name: Set authorized key taken from file
       authorized_key:
-        user: {{ user_name }}
+        user: "{{ user_name }}"
         state: present
         key: "{{ lookup('file', './id_ed25519.pub') }}"
 
