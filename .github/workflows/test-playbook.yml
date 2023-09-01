@@ -8,8 +8,8 @@ on:
     - cron: '0 0 * * 0'  # Schedule for every Sunday at midnight UTC
 
 jobs:
-  ansible-playbook:
-    runs-on: ubuntu-latest  # Choose the runner based on your target host OS
+  test-playbook:
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code

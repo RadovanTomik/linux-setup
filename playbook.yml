@@ -3,6 +3,8 @@
   connection: local
   become: true
   gather_facts: true
+  vars:
+    user_name: rtomasik
   tasks:
     - name: Update & Upgrade APT packages
       apt:
@@ -21,19 +23,42 @@
 
     - name: Create a new user
       user:
-        name: rtomasik
-        home: /home/rtomasik
+        name: {{ user_name }}
         shell: /bin/bash
         create_home: true
 
     - name: Add user to sudoers without password prompt
       lineinfile:
         path: /etc/sudoers
-        line: "rtomasik ALL=(ALL:ALL) NOPASSWD: ALL"
+        line: "{{ user_name }} ALL=(ALL:ALL) NOPASSWD: ALL"
         validate: 'visudo -cf %s'
 
     - name: Set authorized key taken from file
       authorized_key:
-        user: rtomasik
+        user: {{ user_name }}
         state: present
         key: "{{ lookup('file', './id_ed25519.pub') }}"
+
+    - name: Disable password authentication for root
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password'
+
+    - name: Add allowed users to sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^AllowUsers'
+        line: 'AllowUsers root {{ user_name }}'
+
+    - name: Prohibit password login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+
+    - name: Restart SSH service
+      service:
+        name: sshd
+        state: restarted
