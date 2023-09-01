@@ -111,6 +111,6 @@
       register: command_result
 
     - name: Log success message
-      ansible.builtin.debug:
+      debug:
         msg: "Docker installed correctly."
       when: command_result.rc == 0  # Only log on success
