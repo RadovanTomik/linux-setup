@@ -1,19 +1,39 @@
 ---
 - hosts: 127.0.0.1
   connection: local
+  become: true
+  gather_facts: true
   tasks:
     - name: Update & Upgrade APT packages
-      become: true
       apt:
         update_cache: true
         upgrade: yes
 
     - name: Install new packages
-      become: true
       apt:
         name:
           - nano
           - jq
           - curl
           - git
+          - sudo
         state: latest
+
+    - name: Create a new user
+      user:
+        name: rtomasik
+        home: /home/rtomasik
+        shell: /bin/bash
+        create_home: true
+
+    - name: Add user to sudoers without password prompt
+      lineinfile:
+        path: /etc/sudoers
+        line: "rtomasik ALL=(ALL:ALL) NOPASSWD: ALL"
+        validate: 'visudo -cf %s'
+
+    - name: Set authorized key taken from file
+      authorized_key:
+        user: rtomasik
+        state: present
+        key: "{{ lookup('file', './id_ed25519.pub') }}"
