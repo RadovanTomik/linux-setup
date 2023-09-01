@@ -1,0 +1,17 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - name: Update & Upgrade APT packages
+      apt:
+        update_cache: true
+        upgrade: yes
+
+    - name: Install new packages
+      apt:
+        name:
+          - nano
+          - jq
+          - curl
+          - git
+        state: latest

@@ -1,0 +1,31 @@
+name: Ansible Playbook Test
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 0'  # Schedule for every Sunday at midnight UTC
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest  # Choose the runner based on your target host OS
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install Ansible
+        run: |
+          pip install ansible
+        working-directory: ${{ github.workspace }}
+
+      - name: Test Ansible Playbook
+        run: |
+          ansible-playbook local your_playbook.yml
+        working-directory: ${{ github.workspace }}
