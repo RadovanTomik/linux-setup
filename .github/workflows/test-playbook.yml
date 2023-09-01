@@ -9,6 +9,7 @@ on:
 
 jobs:
   test-playbook:
+    name: Test ansible playbook
     runs-on: ubuntu-22.04
 
     steps:

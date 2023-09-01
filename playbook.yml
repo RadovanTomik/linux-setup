@@ -94,3 +94,23 @@
     - name: Install Docker Module for Python
       pip:
         name: docker
+
+    - name: Create a new group
+      group:
+        name: docker
+
+    - name: Add the user to the group
+      user:
+        name: "{{ user_name }}"
+        groups: docker
+        append: yes
+
+    - name: Run hello-world container
+      become_user: "{{ user_name }}"
+      command: docker run hello-world
+      register: command_result
+
+    - name: Log success message
+      ansible.builtin.debug:
+        msg: "Docker installed correctly."
+      when: command_result.rc == 0  # Only log on success
